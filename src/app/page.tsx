@@ -1,95 +1,71 @@
-import Image from 'next/image'
-import styles from './page.module.css'
+'use client'
+
+import Stack from '@mui/material/Stack'
+import Box from '@mui/material/Box'
+import { useSearchParams } from 'next/navigation'
+import { Button, ButtonGroup, CssBaseline, TextField, ThemeProvider } from '@mui/material'
+import Image from '@/components/Image'
+import { useState } from 'react'
+import theme from '@/components/theme'
 
 export default function Home() {
-  return (
-    <main className={styles.main}>
-      <div className={styles.description}>
-        <p>
-          Get started by editing&nbsp;
-          <code className={styles.code}>src/app/page.tsx</code>
-        </p>
-        <div>
-          <a
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{' '}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className={styles.vercelLogo}
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
-        </div>
-      </div>
+  const [players, setPlayers] = useState<Array<string | string[]>>([])
+  const query = useSearchParams()
 
-      <div className={styles.center}>
+  return (
+    <ThemeProvider theme={theme}>
+      <CssBaseline />
+      <Stack spacing={2} m="0 auto" alignItems="center" maxWidth={380}>
         <Image
-          className={styles.logo}
-          src="/next.svg"
+          src="/main.png"
           alt="Next.js Logo"
-          width={180}
-          height={37}
+          width={960}
+          height={640}
+          sx={{ width: 400, height: 300 }}
           priority
         />
-      </div>
-
-      <div className={styles.grid}>
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Docs <span>-&gt;</span>
-          </h2>
-          <p>Find in-depth information about Next.js features and API.</p>
-        </a>
-
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Learn <span>-&gt;</span>
-          </h2>
-          <p>Learn about Next.js in an interactive course with&nbsp;quizzes!</p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Templates <span>-&gt;</span>
-          </h2>
-          <p>Explore starter templates for Next.js.</p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Deploy <span>-&gt;</span>
-          </h2>
-          <p>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
-    </main>
+        <Stack component="form" spacing={2} alignItems="center" width="100%" noValidate>
+          <ButtonGroup>
+            <Button onClick={() => setPlayers(x => [...x, ''])}>Добавить одного</Button>
+            <Button onClick={() => setPlayers(x => [...x, ['', '']])}>Добавить пару</Button>
+          </ButtonGroup>
+          {players.map((item, index) => (
+            typeof item === 'string'
+              ? <TextField
+                key={index}
+                label="Имя"
+                name={`name_${index}`}
+                value={item}
+                onChange={e => setPlayers(
+                  Object.assign(
+                    [], players, { [index]: e.target.value }
+                  )
+                )}
+                size="small"
+                fullWidth
+                autoFocus
+              />
+              : <Stack key={index} spacing={2} direction="row" width="100%">
+                {item.map((subItem, subIndex) =>
+                  <TextField
+                    key={subIndex}
+                    label={`Имя ${subIndex + 1}`}
+                    name={`name_${index}_${subIndex}`}
+                    value={subItem}
+                    onChange={e => setPlayers(
+                      Object.assign([], players, {
+                        [index]: Object.assign([], item, { [subIndex]: e.target.value })
+                      })
+                    )}
+                    size="small"
+                    fullWidth
+                    autoFocus={!subIndex}
+                  />
+                )}
+              </Stack>
+          ))}
+        </Stack>
+      </Stack>
+    </ThemeProvider>
   )
 }
