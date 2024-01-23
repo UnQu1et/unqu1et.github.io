@@ -1,6 +1,9 @@
 import { createTheme } from '@mui/material/styles';
 
 const theme = createTheme({
+  palette: {
+    // mode: 'dark'
+  },
   components: {
     MuiCssBaseline: {
       styleOverrides: `
@@ -19,7 +22,7 @@ const theme = createTheme({
       defaultProps: {
         variant: 'contained',
         color: 'success',
-      }
+      },
     },
     MuiTextField: {
       defaultProps: {
